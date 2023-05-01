@@ -4,6 +4,8 @@ Arcade style rhythm game powered by the RP2040 microprocessor.
 
 ![Prototype](prototype.jpg)
 
+![Schematic](schematic.png)
+
 ## Materials
 
 Most links below are to Adafruit. None are affiliate links.
