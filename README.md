@@ -20,10 +20,13 @@ Most links below are to Adafruit. None are affiliate links.
 - 1x [Micro SD card](https://www.amazon.com/SanDisk-COMINU024966-16GB-microSD-Card/dp/B004KSMXVM/)
   - Note: Avoid overpaying for these for projects. I'd recommend getting [a pack of 10 cards](https://www.amazon.com/dp/B0876H387X) between 8 and 32 GB.
 - 1x [Class D audio amp](https://www.adafruit.com/product/2130)
+- 1x [1602 LCD with 3.3v I2C adapter](https://www.amazon.com/gp/product/B08MPTND1V/)
+  - Note: You can buy these pre-soldered, but you'll need to trim the pins down which may damage your wire cutters. I'd recommend getting some [cheap disposable ones](https://www.amazon.com/Hakko-CHP-170-Micro-Cutter/dp/B00FZPDG1K/) for this purpose.
 - 45x [WS2812 addressable RGB LEDs](https://www.amazon.com/gp/product/B088BRY2SH/)
-  - Note: Only 44 will be visible, but I'm using one as a makeshift logic level shifter
+  - Note: Only 44 will be visible, but I'm using one as a makeshift logic level shifter.
 - 1x Zener diode
   - [Various diode pack](https://www.amazon.com/EEEEE-Assortment-Rectifier-Recovery-Switching/dp/B08SBTS2KZ/)
+  - This is only necessary if you're using one of the LEDs as a makeshift logic level shifter. If you have a dedicated logic level shifter, this isn't necessary
 - 1x [75mm 10 kOhm Linear Slide Potentiometer](https://www.amazon.com/dp/B09NX39NWR?psc=1&ref=ppx_yo2ov_dt_b_product_details)
 - 1x 47uF capacitor
   - [Electrolytic capacitor pack](https://www.amazon.com/BOJACK-Electrolytic-Capacitor-Assortment-0-1uF－1000uF/dp/B07PBQXQNQ/)
@@ -39,3 +42,4 @@ Most links below are to Adafruit. None are affiliate links.
 - 2x M3 heat-set inserts
 - 2x M2 8mm screws
   - For the above assembly hardware, I'd highly recommend just searching around for a kit. There are many options that offer different screw sizes, heads, bits, etc.
+
