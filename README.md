@@ -1,3 +1,3 @@
 # rhythm-machine
 
-Arcade style rhythm game developed around the Raspberry Pi Pico
+Arcade style rhythm game powered by the RP2040 microprocessor.
