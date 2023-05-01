@@ -20,6 +20,10 @@ Most links below are to Adafruit. None are affiliate links.
 - 1x [Micro SD card](https://www.amazon.com/SanDisk-COMINU024966-16GB-microSD-Card/dp/B004KSMXVM/)
   - Note: Avoid overpaying for these for projects. I'd recommend getting [a pack of 10 cards](https://www.amazon.com/dp/B0876H387X) between 8 and 32 GB.
 - 1x [Class D audio amp](https://www.adafruit.com/product/2130)
+- 45x [WS2812 addressable RGB LEDs](https://www.amazon.com/gp/product/B088BRY2SH/)
+  - Note: Only 44 will be visible, but I'm using one as a makeshift logic level shifter
+- 1x Zener diode
+  - [Various diode pack](https://www.amazon.com/EEEEE-Assortment-Rectifier-Recovery-Switching/dp/B08SBTS2KZ/)
 - 1x 47uF capacitor
   - [Electrolytic capacitor pack](https://www.amazon.com/BOJACK-Electrolytic-Capacitor-Assortment-0-1uF－1000uF/dp/B07PBQXQNQ/)
 - 1x 10nF capacitor
