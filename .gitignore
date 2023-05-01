@@ -4,3 +4,5 @@ build/**
 !build/placeholder
 assets/**
 !assets/README.md
+KiCad/gerber/**
+KiCad/rhythm-machine-backups/**
