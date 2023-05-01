@@ -24,6 +24,7 @@ Most links below are to Adafruit. None are affiliate links.
   - Note: Only 44 will be visible, but I'm using one as a makeshift logic level shifter
 - 1x Zener diode
   - [Various diode pack](https://www.amazon.com/EEEEE-Assortment-Rectifier-Recovery-Switching/dp/B08SBTS2KZ/)
+- 1x [75mm 10 kOhm Linear Slide Potentiometer](https://www.amazon.com/dp/B09NX39NWR?psc=1&ref=ppx_yo2ov_dt_b_product_details)
 - 1x 47uF capacitor
   - [Electrolytic capacitor pack](https://www.amazon.com/BOJACK-Electrolytic-Capacitor-Assortment-0-1uF－1000uF/dp/B07PBQXQNQ/)
 - 1x 10nF capacitor
@@ -32,3 +33,9 @@ Most links below are to Adafruit. None are affiliate links.
 - 1x 220 Ohm resistor
 - 1x 1.8 kOhm resistor
   - [Resistor pack](https://www.amazon.com/BOJACK-Values-Resistor-Resistors-Assortment/dp/B08FD1XVL6/)
+- 4x M3 6mm screws
+- 4x M3 8mm screws
+- 8x M3 nuts
+- 2x M3 heat-set inserts
+- 2x M2 8mm screws
+  - For the above assembly hardware, I'd highly recommend just searching around for a kit. There are many options that offer different screw sizes, heads, bits, etc.
