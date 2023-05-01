@@ -6,3 +6,5 @@ assets/**
 !assets/README.md
 KiCad/gerber/**
 KiCad/rhythm-machine-backups/**
+KiCad/#auto_saved_files#
+KiCad/_autosave-rhythm-machine.kicad_sch
