@@ -1,0 +1,6 @@
+generated/*
+!generated/placeholder
+build/**
+!build/placeholder
+assets/**
+!assets/README.md

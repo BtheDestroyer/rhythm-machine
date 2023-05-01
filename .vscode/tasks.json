@@ -1,0 +1,83 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+      {
+          "label": "PicoProbe UART",
+          "command": "minicom",
+          "args": [
+              "-D", "/dev/ttyACM?",
+              "-o",
+              "-b", "115200"
+          ],
+          "type": "shell",
+          "isBackground": true,
+          
+          // This task is run before some debug tasks.
+          // Problem is, it's a watch script, and since it never exits, VSCode
+          // complains. All this is needed so VSCode just lets it run.
+          "problemMatcher": [
+            {
+              "pattern": [
+                {
+                  "regexp": ".",
+                  "file": 1,
+                  "location": 2,
+                  "message": 3
+                }
+              ],
+              "background": {
+                "activeOnStart": true,
+                "beginsPattern": ".",
+                "endsPattern": ".",
+              }
+            }
+          ]
+      },
+      {
+          "label": "Pi4 UART",
+          "command": "minicom",
+          "args": [
+              "-D", "/dev/serial0",
+              "-o",
+              "-b", "115200"
+          ],
+          "type": "shell",
+          "isBackground": true,
+          
+          // This task is run before some debug tasks.
+          // Problem is, it's a watch script, and since it never exits, VSCode
+          // complains. All this is needed so VSCode just lets it run.
+          "problemMatcher": [
+            {
+              "pattern": [
+                {
+                  "regexp": ".",
+                  "file": 1,
+                  "location": 2,
+                  "message": 3
+                }
+              ],
+              "background": {
+                "activeOnStart": true,
+                "beginsPattern": ".",
+                "endsPattern": ".",
+              }
+            }
+          ]
+      },
+        {
+          "label": "Kill UART",
+          "type": "shell",
+          "command": "echo ${input:terminate}",
+          "problemMatcher": []
+        }
+      ],
+      "inputs": [
+        {
+          "id": "terminate",
+          "type": "command",
+          "command": "workbench.action.tasks.terminate",
+          "args": "terminateAll"
+        }
+    ]
+}
