@@ -22,6 +22,8 @@ pico_sdk_init()
 add_executable(rhythm_machine
         "src/audio.cpp"
         "src/lcd.cpp"
+        "src/leds.cpp"
+        "src/input.cpp"
         "src/machine.cpp"
         "src/main.cpp"
         "src/sd.cpp"

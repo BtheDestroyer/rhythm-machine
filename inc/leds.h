@@ -1,10 +1,9 @@
 #pragma once
 #include <array>
-#include <functional>
-#include <cstdint>
 #include <cmath>
-#include "hardware/pio.h"
-#include "ws2812.pio.h"
+#include <cstdint>
+#include <functional>
+#include <span>
 
 #define LED_IS_RGBW false
 #define LED_DATA_PIN 15
@@ -12,7 +11,7 @@
 
 struct color {
     std::uint8_t r, g, b;
-    color operator*(float f) const
+    inline color operator*(float f) const
     {
         return {
             static_cast<std::uint8_t>(std::floor(r * f)),
@@ -20,7 +19,7 @@ struct color {
             static_cast<std::uint8_t>(std::floor(b * f))
         };
     }
-    color& operator*=(float f)
+    inline color& operator*=(float f)
     {
         r = static_cast<std::uint8_t>(std::floor(r * f));
         g = static_cast<std::uint8_t>(std::floor(g * f));
@@ -38,76 +37,14 @@ namespace colors {
 
 class LEDs {
 public:
-    LEDs()
-    {
-        ws2812_program_init(pio0, 0, pio_add_program(pio0, &ws2812_program), LED_DATA_PIN, 800000, LED_IS_RGBW);
-        
-        clear();
-    }
+    LEDs();
 
-    void put_pixel(color pixel)
-    {
-        const std::uint32_t c{
-            (static_cast<std::uint32_t>(pixel.r) << 8)
-            | (static_cast<std::uint32_t>(pixel.g) << 16)
-            | static_cast<std::uint32_t>(pixel.b)
-        };
-        // if (next_pixel != 0)
-        // {
-        //     // Pixel 0 is a sacrifical 3.3v->5v level shifter
-        //     pio_sm_put_blocking(pio0, 0, 0);
-        // }
-        // else
-        {
-            pixels[next_pixel] = pixel;
-            pio_sm_put_blocking(pio0, 0, c << 8u);
-        }
-        next_pixel = (next_pixel + 1) % (LED_COUNT);
-    }
-
-    void clear()
-    {
-        for (std::uint32_t i{ 0 }; i < LED_COUNT; ++i)
-        {
-            put_pixel(colors::black);
-        }
-    }
-
-    void pattern_snakes(std::uint32_t t)
-    {
-        for (std::uint32_t i{ 0 }; i < LED_COUNT; ++i)
-        {
-            const std::uint32_t x{ (i + t) % 64 };
-            if (x < 10)
-            {
-                color c;
-                switch (((i + t) % (64 * 3)) / 64)
-                {
-                    case 0:
-                        c = colors::red;
-                        break;
-                    case 1:
-                        c = colors::green;
-                        break;
-                    case 2:
-                        c = colors::blue;
-                        break;
-                }
-                if (x != 0)
-                {
-                    c *= 0.1f;
-                }
-                put_pixel(c);
-                continue;
-            }
-            put_pixel(colors::black);
-        }
-    }
-
-    const color& get_pixel(std::size_t index) const
-    {
-        return pixels.at(index);
-    }
+    void put_pixel(color pixel);
+    void clear();
+    void pattern_snakes(std::uint32_t t);
+    void show_pattern(std::span<const color> pattern);
+    void show_pattern(std::function<color (std::uint32_t pixel_index)> generator);
+    const color& get_pixel(std::size_t index) const;
 
 private:
     std::size_t next_pixel{ 0 };

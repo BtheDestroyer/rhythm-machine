@@ -82,5 +82,40 @@ namespace States
         score += val;
         machine.lcd.display(std::to_string(score));
     }
-
 }
+
+Machine::Machine()
+{
+    Audio::init();
+    lcd.send_command(I2C_LCD::Command::DisplayControl, I2C_LCD::DisplayFlag::DisplayOn);
+    lcd.display("Hello, LCD");
+    lcd.display("Reading SD...");
+    if (!sd.init())
+    {
+        lcd.display("SD Card Error!");
+        exit(1);
+    }
+    current_state = std::make_unique<States::SongList>(*this);
+}
+
+void Machine::update()
+{
+    buttons.left.red.update();
+    buttons.left.green.update();
+    buttons.left.blue.update();
+    buttons.right.red.update();
+    buttons.right.green.update();
+    buttons.right.blue.update();
+    Audio::stream_wave_to_inactive_buffer();
+
+    if (current_state)
+    {
+        (*current_state)(*this);
+        ++current_tick;
+        if (next_state)
+        {
+            current_state = std::move(next_state);
+        }
+    }
+}
+
