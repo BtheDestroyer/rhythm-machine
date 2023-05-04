@@ -27,6 +27,7 @@ add_executable(rhythm_machine
         "src/machine.cpp"
         "src/main.cpp"
         "src/sd.cpp"
+        "src/song_data.cpp"
         )
 
 target_include_directories(rhythm_machine

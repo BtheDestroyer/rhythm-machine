@@ -1,4 +1,5 @@
 #include "leds.h"
+#include "pico/stdlib.h"   // stdlib
 #include "hardware/pio.h"
 #include "ws2812.pio.h"
 
@@ -15,7 +16,7 @@ void LEDs::put_pixel(color pixel)
         (static_cast<std::uint32_t>(pixel.r) << 8) | (static_cast<std::uint32_t>(pixel.g) << 16) | static_cast<std::uint32_t>(pixel.b)};
     pixels[next_pixel] = pixel;
     pio_sm_put_blocking(pio0, 0, c << 8u);
-    next_pixel = (next_pixel + 1) % (LED_COUNT);
+    next_pixel = (next_pixel + 1) % (led_count);
 }
 
 void LEDs::clear()
@@ -54,15 +55,48 @@ void LEDs::pattern_snakes(std::uint32_t t)
 
 void LEDs::show_pattern(std::span<const color> pattern)
 {
-    for (std::uint32_t i{0}; i < LED_COUNT && i < pattern.size(); ++i)
+    sleep_us(100);
+    next_pixel = 0;
+    
+    for (const color& c : pattern)
     {
-        put_pixel(pattern[i]);
+        put_pixel(c);
+    }
+}
+
+void LEDs::show_pattern(const std::array<color, led_count>& pattern)
+{
+    sleep_us(100);
+    next_pixel = 0;
+    
+    for (const color& c : pattern)
+    {
+        put_pixel(c);
+    }
+}
+
+void LEDs::show_pattern(const std::array<color, visible_led_count>& pattern)
+{
+    sleep_us(100);
+    next_pixel = 0;
+    
+    if (using_sacrificial_led)
+    {
+        put_pixel(colors::black);
+    }
+    
+    for (const color& c : pattern)
+    {
+        put_pixel(c);
     }
 }
 
 void LEDs::show_pattern(std::function<color (std::uint32_t pixel_index)> generator)
 {
-    for (std::uint32_t i{0}; i < LED_COUNT; ++i)
+    sleep_us(100);
+    next_pixel = 0;
+
+    for (std::uint32_t i{0}; i < led_count; ++i)
     {
         put_pixel(std::invoke(generator, i));
     }

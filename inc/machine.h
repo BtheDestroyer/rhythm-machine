@@ -6,6 +6,7 @@
 #include "leds.h"
 #include "sd.h"
 #include "state.h"
+#include "song_data.h"
 
 namespace States
 {
@@ -24,8 +25,10 @@ namespace States
     class PlaySong : public State
     {
     private:
-        std::uint32_t score{ 0 };
+        std::uint32_t score{ 0u };
         void increment_score(Machine& machine, std::uint32_t val);
+        song_data::Song song;
+        std::uint64_t last_update_ms{ ~0ull };
 
     public:
         PlaySong(Machine& machine);

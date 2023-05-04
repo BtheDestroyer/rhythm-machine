@@ -70,11 +70,52 @@ namespace States
     {
         machine.leds.clear();
         machine.lcd.display(std::to_string(score));
+        song.notes.emplace_back(song_data::Note{
+            .note_color = song_data::Note::Color::Green,
+            .direction = song_data::Note::Direction::Clockwise,
+            .start_ms = 2000,
+            .length_ms = 500
+        });
+        song.notes.emplace_back(song_data::Note{
+            .note_color = song_data::Note::Color::Green,
+            .direction = song_data::Note::Direction::Counterclockwise,
+            .start_ms = 3000,
+            .length_ms = 500
+        });
+        song.notes.emplace_back(song_data::Note{
+            .note_color = song_data::Note::Color::Red,
+            .direction = song_data::Note::Direction::Clockwise,
+            .start_ms = 4000,
+            .length_ms = 500
+        });
+        song.notes.emplace_back(song_data::Note{
+            .note_color = song_data::Note::Color::Blue,
+            .direction = song_data::Note::Direction::Counterclockwise,
+            .start_ms = 4000,
+            .length_ms = 500
+        });
     }
 
     void PlaySong::operator()(Machine &machine)
     {
-        // machine.leds.display_notes(active_notes);
+        const std::uint64_t now_ms{ time_us_64() / 1000ull };
+        if (now_ms != last_update_ms)
+        {
+            if (last_update_ms == ~0)
+            {
+                last_update_ms = now_ms; // Ensures the first loop has a delta time of 0
+            }
+            if (song.current_time_ms > 5000) // Temp for testing
+            {
+                song.current_time_ms = 0;
+            }
+            song.current_time_ms += now_ms - last_update_ms;
+            last_update_ms = now_ms;
+
+            const auto leds{ song.render_leds() };
+            sleep_ms(4);
+            machine.leds.show_pattern(leds);
+        }
     }
 
     void PlaySong::increment_score(Machine &machine, std::uint32_t val)
@@ -95,7 +136,8 @@ Machine::Machine()
         lcd.display("SD Card Error!");
         exit(1);
     }
-    current_state = std::make_unique<States::SongList>(*this);
+    //current_state = std::make_unique<States::SongList>(*this);
+    current_state = std::make_unique<States::PlaySong>(*this);
 }
 
 void Machine::update()
