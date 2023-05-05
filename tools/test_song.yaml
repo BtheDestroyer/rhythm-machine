@@ -1,0 +1,20 @@
+song:
+  ms_per_pixel: 10
+  lead_in_ms: 1000 # Delay added before all notes
+  author: "Bryce Dixon"
+  difficulty: 1
+
+notes:
+  - color: red
+    direction: left
+    start_ms: 100
+    length_ms: 100
+  - color: green
+    direction: right
+    start_ms: 300
+    length_ms: 100
+  - color: blue
+    direction: left
+    start_ms: 500
+    length_ms: 100
+    speed: 0.5

@@ -20,6 +20,7 @@ struct Note
     } direction;
     std::uint32_t start_ms;
     std::uint32_t length_ms;
+    float speed{ 1.0f }; // TODO
 
     [[nodiscard]] color get_pixel_color(bool bright = true) const;
 };
