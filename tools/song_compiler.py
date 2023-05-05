@@ -133,6 +133,8 @@ def main(argv):
             note_file.write(struct.pack("<I", note["start_ms"] + data["song"]["lead_in_ms"]))
             note_file.write(struct.pack("<I", note["length_ms"]))
             note_file.write(struct.pack("<f", note.get("speed", 1.0)))
+            # padding for future note data
+            note_file.write(struct.pack("2c", *[bytes(c, 'utf-8') for c in ['\0'] * 2]))
         print("\tDone!")
     
 if __name__ == "__main__":
