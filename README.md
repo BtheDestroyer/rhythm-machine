@@ -6,6 +6,12 @@ Arcade style rhythm game powered by the RP2040 microprocessor.
 
 ![Schematic](schematic.png)
 
+## To Do
+
+- The Pico's power supply isn't sufficient for running the amp + speaker. A new one will have to be added to the PCB.
+- The audio amp and SD card reader modules should be worked into the PCB directly rather than third-party items.
+- Potentially ditch the Pico by integrating the RP2040 into the main PCB directly.
+
 ## Materials
 
 Most links below are to Adafruit. None are affiliate links.
@@ -13,7 +19,7 @@ Most links below are to Adafruit. None are affiliate links.
 - 1x [Raspberry Pi Pico](https://www.adafruit.com/product/4864)
 - 1x [3 inch, 3 watt speaker](https://www.adafruit.com/product/1314)
 - 6x [Arcade buttons](https://www.adafruit.com/product/473)
-  - Note: Get 2 of 3 different colors; Red + Green + Blue
+  - Note: Get 2 of 3 different colors; Red + Green + Bluefloat
 - 6x [Quick-connect JST cables](https://www.adafruit.com/product/1152)
   - Note: The link is to a pack of 10, so just one pack will be sufficient.
 - 6x [2-Pin JST-XH connectors](https://www.digikey.com/en/products/detail/jst-sales-america-inc/B2B-XH-A-LF-SN/1651045)
