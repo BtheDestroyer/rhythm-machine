@@ -2,7 +2,7 @@ generated/*
 !generated/placeholder
 build/**
 !build/placeholder
-assets/**
+assets/**.wav
 !assets/README.md
 KiCad/gerber/**
 KiCad/rhythm-machine-backups/**

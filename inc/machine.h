@@ -63,6 +63,8 @@ struct Machine
 
     [[nodiscard]] inline std::uint32_t get_current_tick() { return current_tick; }
     
+    std::string current_song_path;
+
 private:
     std::uint32_t current_tick{0};
 

@@ -1,5 +1,6 @@
 #include "song_data.h"
 #include <algorithm>
+#include <cstring>
 
 namespace song_data
 {
@@ -18,9 +19,45 @@ namespace song_data
         return colors::black;
     }
 
+    bool Song::Header::validate() const
+    {
+        if (std::memcmp(magic_note, "NOTE", 4) != 0)
+        {
+            return false;
+        }
+        if (version_major != Song::verison_major)
+        {
+            return false;
+        }
+        if (difficulty < 1 || difficulty > 10)
+        {
+            return false;
+        }
+        return true;
+    }
+
+    std::optional<Song> Song::load_from_note_file(SDCard::FileReader file)
+    {
+        Header header;
+        if (!file.read(header) || !header.validate())
+        {
+            return std::nullopt;
+        }
+        Song song{ header };
+        for (Note& note : song.notes)
+        {
+            if (!file.read(note))
+            {
+                return std::nullopt;
+            }
+        }
+        return song;
+    }
+
     std::array<color, visible_led_count> Song::render_leds() const
     {
         std::array<color, visible_led_count> leds{ colors::black };
+        // TODO: Figure out this math to improve efficiency of note lookup
         // const auto first_shown_note{
         //     std::lower_bound(
         //         notes.begin(), notes.end(),
@@ -36,8 +73,8 @@ namespace song_data
         //     )
         // };
 
-        //for (auto note{ first_shown_note }; note != last_shown_note; ++note)
-        for (const auto& note : notes)
+        //for (auto Note{ first_shown_note }; note != last_shown_note; ++note)
+        for (const Note& note : notes)
         {
             if (note.start_ms - pixel_count_to_note_length(visible_led_count) > current_time_ms)
             {
@@ -91,19 +128,22 @@ namespace song_data
         return leds;
     }
 
+    // TODO: Account for note.speed
     std::int64_t Song::note_length_to_pixel_count(std::uint32_t time_ms) const
     {
-        return static_cast<int64_t>(time_ms) / static_cast<int64_t>(ms_per_pixel);
+        return static_cast<int64_t>(time_ms) / static_cast<int64_t>(header.ms_per_pixel);
     }
 
+    // TODO: Account for note.speed
     std::int64_t Song::pixel_count_to_note_length(std::uint32_t count) const
     {
-        return static_cast<int64_t>(count) * static_cast<int64_t>(ms_per_pixel);
+        return static_cast<int64_t>(count) * static_cast<int64_t>(header.ms_per_pixel);
     }
 
+    // TODO: Account for note.speed
     std::int64_t Song::note_time_to_pixel_index(std::uint32_t time_ms, Note::Direction direction) const
     {
-        const std::int64_t offset{ (static_cast<std::int64_t>(current_time_ms) - static_cast<std::int64_t>(time_ms)) / static_cast<std::int64_t>(ms_per_pixel) };
+        const std::int64_t offset{ (static_cast<std::int64_t>(current_time_ms) - static_cast<std::int64_t>(time_ms)) / static_cast<std::int64_t>(header.ms_per_pixel) };
         if (direction == Note::Direction::Counterclockwise)
         {
             return visible_led_count + offset;
@@ -111,12 +151,13 @@ namespace song_data
         return -offset;
     }
 
+    // TODO: Account for note.speed
     std::int64_t Song::pixel_index_to_note_time(std::size_t index, Note::Direction direction) const
     {
         if (direction == Note::Direction::Counterclockwise)
         {
             return note_time_to_pixel_index(visible_led_count + index, Note::Direction::Clockwise);
         }
-        return static_cast<std::int64_t>(current_time_ms) + static_cast<int64_t>(index) * static_cast<int64_t>(ms_per_pixel);
+        return static_cast<std::int64_t>(current_time_ms) + static_cast<int64_t>(index) * static_cast<int64_t>(header.ms_per_pixel);
     }
 }
