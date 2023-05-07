@@ -23,78 +23,74 @@ def print_usage(script_name):
     print("\n\tUsage: python(3)", script_name, "file1.yaml [file2.yaml [...]]\n")
 
 def validate_song_data(data):
-    valid = True
-    if "song" not in data:
-        print("\tMissing field: song")
-        valid = False
-    elif not isinstance(data["song"], dict):
-        print("\tInvalid field: song must be a dictionary")
-        valid = False
-    if "ms_per_pixel" not in data.get("song", {}):
-        print("\tMissing field: song.ms_per_pixel")
-        valid = False
-    elif not isinstance(data["song"]["ms_per_pixel"], int) or data["song"]["ms_per_pixel"] < 0:
-        print("\tInvalid field: song.ms_per_pixel must be a positive integer")
-        valid = False
-    if "lead_in_ms" not in data.get("song", {}):
-        print("\tMissing field: song.lead_in_ms")
-        valid = False
-    elif not isinstance(data["song"]["lead_in_ms"], int) or data["song"]["lead_in_ms"] < 0:
-        print("\tInvalid field: song.lead_in_ms must be a positive integer")
-        valid = False
-    if "author" in data.get("song", {}):
-        if not isinstance(data["song"]["author"], str) or len(data["song"]["author"]) > 32:
-            print("\tInvalid field: song.author must be a string of length less than or equal to 32")
-            valid = False
-    if "difficulty" not in data.get("song", {}):
-        print("\tMissing field: song.lead_in_ms")
-        valid = False
-    if "difficulty" not in data.get("song", {}):
-        print("\tMissing field: song.difficulty")
-        valid = False
-    elif not isinstance(data["song"]["difficulty"], int) or data["song"]["difficulty"] < 1 or data["song"]["difficulty"] > 10:
-        print("\tInvalid field: song.difficulty must be an integer between 1 and 10 (inclusive)")
-        valid = False
+    def validate_item(data, validator, field_name, print_error = True):
+        if isinstance(validator, tuple):
+            for option in validator:
+                if validate_item(data, option, field_name, False):
+                    return True
+            if print_error:
+                print("\tInvalid field:", field_name, "must be in the set", validator)
+            return False
+        if callable(validator):
+            if not validator(data):
+                if print_error:
+                    print("\tInvalid field:", field_name)
+                return False
+        elif data is None:
+            if print_error:
+                print("\tMissing field:", field_name)
+            return False
+        elif isinstance(validator, dict):
+            if not validate_with_dictionary(data, validator, field_name):
+                if print_error:
+                    print("\t\tInvalid child of field:", field_name)
+                return False
+        elif data != validator:
+            if print_error:
+                print("\tInvalid field:", field_name, "must be", validator)
+            return False
+        return True
 
-    if "notes" not in data:
-        print("\tMissing field: notes")
-        valid = False
-    elif not isinstance(data["notes"], list):
-        print("\tInvalid field: notes must be a list")
-        valid = False
-    else:
-        note_index = 0
-        for note in data["notes"]:
-            if "color" not in note:
-                print("\tMissing field: note[", note_index, "].color", sep="")
-                valid = False
-            elif note["color"] not in ["red", "green", "blue"]:
-                print("\tInvalid field: note[", note_index, "].color must be of the set: [red, green, blue]", sep="")
-                valid = False
-            if "direction" not in note:
-                print("\tMissing field: note[", note_index, "].direction", sep="")
-                valid = False
-            elif note["direction"] not in ["left", "right"]:
-                print("\tInvalid field: note[", note_index, "].direction must be of the set: [left, right]", sep="")
-                valid = False
-            if "start_ms" not in note:
-                print("\tMissing field: note[", note_index, "].start_ms", sep="")
-                valid = False
-            elif not isinstance(note["start_ms"], int) or note["start_ms"] < 0:
-                print("\tInvalid field: note[", note_index, "].start_ms must be a positive integer (value: ", note["start_ms"], ")", sep="")
-                valid = False
-            if "length_ms" not in note:
-                print("\tMissing field: note[", note_index, "].length_ms", sep="")
-                valid = False
-            elif not isinstance(note["length_ms"], int) or note["length_ms"] < 0:
-                print("\tInvalid field: note[", note_index, "].length_ms must be a positive integer (value: ", note["length_ms"], ")", sep="")
-                valid = False
-            if "speed" in note:
-                if (not isinstance(note["speed"], int) and not isinstance(note["speed"], float)) or note["speed"] <= 0:
-                    print("\tInvalid field: note[", note_index, "].speed must be a non-zero positive number (value: ", note["speed"], ")", sep="")
-                    valid = False
-            note_index += 1
-    return valid
+    def validate_with_dictionary(data, dictionary, path = None):
+        valid = True
+        for key, validator in dictionary.items():
+            field_name = path + "." + key if path != None else key
+            this_item_valid = key in data and validate_item(data.get(key, None), validator, field_name)
+            valid = valid and this_item_valid
+        return valid
+    
+    def validate_array(array, dictionary, path):
+        if not isinstance(array, list):
+            print("\tInvalid field:", path, "must be an array")
+            return False
+        index = 0
+        valid = True
+        for item in array:
+            field_name = path + "[" + str(index) + "]" if path != None else "[" + str(index) + "]"
+            this_item_valid = validate_with_dictionary(item, dictionary, field_name)
+            valid = valid and this_item_valid
+            index += 1
+        return True
+
+    def positive_integer(x):
+        return isinstance(x, int) and x >= 0
+
+    ROOT_VALIDATION = {
+        "song": {
+            "ms_per_pixel": positive_integer,
+            "lead_in_ms": positive_integer,
+            "author": lambda x: isinstance(x, str) and len(x) <= 32,
+            "difficulty": lambda x: isinstance(x, int) and x >= 1 and x <= 10
+        },
+        "notes": lambda x: validate_array(x, {
+                "color": ("red", "green", "blue"),
+                "direction": ("left", "right"),
+                "start_ms": positive_integer,
+                "length_ms": positive_integer,
+                "speed": lambda x: x is None or ((isinstance(x, int) or isinstance(x, float)) and x > 0),
+            }, "notes")
+    }
+    return validate_with_dictionary(data, ROOT_VALIDATION)
 
 def main(argv):
     if len(argv) < 2:
